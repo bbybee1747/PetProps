@@ -38,7 +38,7 @@ PetAdoptMe is a web application designed to facilitate the adoption of pets from
 
   ## Contact-Me
 
-  - Email - byeb.brandon1@gmail.com
+  - Email - bybee.brandon1@gmail.com
   - GitHub - [bbybee1747](https://github.com/bbybee1747/PetProps)
 
   ## Contributors
