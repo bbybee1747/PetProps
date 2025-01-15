@@ -9,6 +9,6 @@ app.get("/", (req, res) => {
     res.send("Hello, PERN + TypeScript!");
 });
 
-app.listen(5000, () => {
-    console.log("Server running on http://localhost:5000");
+app.listen(3001, () => {
+    console.log("Server running on http://localhost:3001");
 });
