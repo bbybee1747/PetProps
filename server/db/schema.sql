@@ -1,0 +1,20 @@
+    CREATE TABLE user (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        password_hash VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    CREATE TABLE adoption_forms (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES user(id) ON DELETE CASCADE,
+        pet_id INTEGER NOT NULL,
+        pet_name VARCHAR(100) NOT NULL,
+        pet_type VARCHAR(100) NOT NULL,
+        pet_breed VARCHAR(100) NOT NULL,
+        pet_age INTEGER NOT NULL,
+        reason TEXT NOT NULL,
+        status VARCHAR(100) DEFAULT 'pending',
+        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
