@@ -1,3 +1,7 @@
+    DROP DATABASE IF EXISTS petprops_db;
+    
+    CREATE DATABASE petprops_db;
+    
     CREATE TABLE user (
         id SERIAL PRIMARY KEY,
         username VARCHAR(50) NOT NULL,
