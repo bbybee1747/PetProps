@@ -1,28 +1,25 @@
-import { Link, useLocation } from "react-router-dom";
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Nav() {
   return (
     <nav>
       <div>
-        <Link to="/"></Link>
-
-        <div>
-          <ul>
-            <li>
-              <Link to="/"></Link>
-            </li>
-            <li>
-              <Link to="/Portfolio">Portfolio</Link>
-            </li>
-            <li>
-              <Link to="/Contact">Contact</Link>
-            </li>
-            <li>
-              <Link to="/Resume">Resume</Link>
-            </li>
-          </ul>
-        </div>
+        <Link to="/">Pet Adoption App</Link>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/pet-list">Pet List</Link>
+          </li>
+          <li>
+            <Link to="/adoption-form">Adoption Form</Link>
+          </li>
+          <li>
+            <Link to="/user-profile">User Profile</Link>
+          </li>
+        </ul>
       </div>
     </nav>
   );

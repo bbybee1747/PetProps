@@ -1,4 +1,5 @@
-import Navbar from "./Navbar.tsx"
+import React from "react";
+import Navbar from "./Navbar.tsx";
 
 export default function Header() {
   return (
@@ -7,7 +8,6 @@ export default function Header() {
       <div>
         <Navbar />
       </div>
-      
     </div>
   );
 }
