@@ -1,25 +1,22 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import Footer from "./components/Footer.tsx";
-import Header from "./components/Header.tsx";
-import TestApi from "./TestApi.tsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage.tsx";
+import AboutPage from "./pages/AdoptionForm.tsx";
+import ContactPage from "./pages/PetDetails.tsx";
+import AdoptionPage from "./pages/UserProfile.tsx";
+import NotFoundPage from "./pages/PetList.tsx";
 
 function App() {
   return (
-    <div className="d-flex flex-column vh-100 vw-100">
-      <Header />
-      <main className="flex-grow-1">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-12">
-              <Outlet />
-              <TestApi />
-            </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/adoption" element={<AdoptionPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Router>
   );
 }
 

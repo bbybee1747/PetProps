@@ -13,6 +13,10 @@
     CREATE TABLE adoption_forms (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES user(id) ON DELETE CASCADE,
+        user_name VARCHAR(100) NOT NULL,
+        user_address VARCHAR(100) NOT NULL,
+        user_phone VARCHAR(100) NOT NULL,
+        user_email VARCHAR(100) NOT NULL,
         pet_id INTEGER NOT NULL,
         pet_name VARCHAR(100) NOT NULL,
         pet_type VARCHAR(100) NOT NULL,

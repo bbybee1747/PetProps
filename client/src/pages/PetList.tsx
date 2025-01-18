@@ -3,7 +3,7 @@
 
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import PetList from "../components/PetFinder";
+import { PetList } from "../components/PetFinder";
 
 const App: React.FC = () => {
   return (

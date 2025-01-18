@@ -11,7 +11,7 @@ const PetList = () => {
       try {
         const response = await axios.get("/api/pets", {
           params: {
-            type: "dog", // Example filter
+            type: "dog",
           },
         });
         setPets(response.data.animals);
