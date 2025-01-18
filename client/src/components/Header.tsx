@@ -1,13 +1,14 @@
-import React from "react";
-import Navbar from "./Navbar.tsx";
+import NavBar from "./NavBar";
 
-export default function Header() {
+const Header = () => {
   return (
-    <div>
-      <h1>Portfolio</h1>
-      <div>
-        <Navbar />
+    <header className="bg-gray-800 shadow-lg">
+      <div className="container mx-auto p-4 flex justify-between items-center">
+        <h1 className="text-white text-2xl font-bold">Pet Props</h1>
+        <NavBar />
       </div>
-    </div>
+    </header>
   );
-}
+};
+
+export default Header;

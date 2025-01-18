@@ -1,28 +1,42 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
-function Nav() {
+const NavBar = () => {
   return (
-    <nav>
-      <div>
-        <Link to="/">Pet Adoption App</Link>
-        <ul>
-          <li>
-            <Link to="/home-page">Home</Link>
-          </li>
-          <li>
-            <Link to="/pet-list">Pet List</Link>
-          </li>
-          <li>
-            <Link to="/adoption-form">Adoption Form</Link>
-          </li>
-          <li>
-            <Link to="/user-profile">User Profile</Link>
-          </li>
-        </ul>
-      </div>
+    <nav className="bg-gray-800 p-4">
+      <ul className="flex space-x-4 text-white font-semibold">
+        <li>
+          <Link className="hover:underline" to="/">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" to="/About">
+            About
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" to="/AdoptionForm">
+            Adoption Form
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" to="/Contact">
+            Contact
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" to="/PetList">
+            Pet List
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" to="/UserProfile">
+            User Profile
+          </Link>
+        </li>
+      </ul>
     </nav>
   );
-}
+};
 
-export default Nav;
+export default NavBar;

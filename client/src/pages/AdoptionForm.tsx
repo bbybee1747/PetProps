@@ -3,7 +3,7 @@
 // There will also be additional fields that the user will need to fill out.
 // We also need to figure out where to send this information once it is submitted. Should go to an admin location for approval, maybe an admin email address.
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const AdoptionForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const AdoptionForm: React.FC = () => {
   });
 
   useEffect(() => {
-    // Fetch user data from the database (mocked here for simplicity)
+    // Fetch user data from the database
     const fetchUserData = async () => {
       const userData = {
         user_name: "John Doe",

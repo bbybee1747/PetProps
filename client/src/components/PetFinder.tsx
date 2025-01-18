@@ -1,57 +1,58 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 
-const PetList = () => {
-  const [pets, setPets] = useState<any[]>([]);
+interface Pet {
+  id: number;
+  name: string;
+  age: string;
+  species: string;
+  breeds: { primary: string };
+  photos: { medium: string }[];
+}
+
+interface PetFinderProps {
+  onDataFetched: (pets: Pet[]) => void;
+}
+
+const PetFinder: React.FC<PetFinderProps> = ({ onDataFetched }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPets = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await axios.get("/api/pets", {
-          params: {
-            type: "dog",
+        const response = await fetch("https://api.petfinder.com/v2/animals", {
+          headers: {
+            Authorization: `Bearer YOUR_ACCESS_TOKEN`,
           },
         });
-        setPets(response.data.animals);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred");
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
         }
+        const data = await response.json();
+        onDataFetched(data.animals);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchPets();
-  }, []);
+  }, [onDataFetched]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return <p className="text-center text-gray-600">Loading pets...</p>;
+  }
 
-  return (
-    <div>
-      <h1>Available Pets</h1>
-      <ul>
-        {pets.map((pet) => (
-          <li key={pet.id}>
-            <h2>{pet.name}</h2>
-            <p>{pet.description}</p>
-            {pet.photos[0] && (
-              <img
-                src={pet.photos[0].medium}
-                alt={pet.name}
-                style={{ width: "200px", height: "200px", objectFit: "cover" }}
-              />
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  if (error) {
+    return <p className="text-center text-red-600">{error}</p>;
+  }
+
+  return null;
 };
 
-export default PetList;
+export default PetFinder;

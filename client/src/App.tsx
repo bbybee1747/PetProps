@@ -1,21 +1,27 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage.tsx";
-import AboutPage from "./pages/AdoptionForm.tsx";
-import ContactPage from "./pages/PetDetails.tsx";
-import AdoptionPage from "./pages/UserProfile.tsx";
-import NotFoundPage from "./pages/PetList.tsx";
+import AdoptionForm from "./pages/AdoptionForm.tsx";
+import AboutPage from "./pages/About.tsx";
+import ContactPage from "./pages/Contact.tsx";
+// import UserProfile from "./pages/UserProfile.tsx";
+import PetList from "./pages/PetList.tsx";
+import ErrorPage from "./pages/ErrorPage.tsx";
+import Header from "./components/Header.tsx";
+import Footer from "./components/Footer.tsx";
 
 function App() {
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/adoption" element={<AdoptionPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="/About" element={<AboutPage />} />
+        <Route path="/AdoptionForm" element={<AdoptionForm />} />
+        <Route path="*" element={<ErrorPage />} />
+        <Route path="/Contact" element={<ContactPage />} />
+        <Route path="/PetList" element={<PetList />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
