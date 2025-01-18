@@ -8,7 +8,7 @@ function Nav() {
         <Link to="/">Pet Adoption App</Link>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/home-page">Home</Link>
           </li>
           <li>
             <Link to="/pet-list">Pet List</Link>
