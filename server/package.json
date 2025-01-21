@@ -5,12 +5,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev src/server.ts",
-    "start": "node src/server.ts"
+    "start": "ts-node src/server.ts",
+    "seed": "ts-node src/seeds/index.ts"
   },
-  "proxy": "http://localhost:3000",
+  "proxy": "http://localhost:5173",
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "description": "",
   "devDependencies": {
@@ -28,6 +29,7 @@
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/pg": "^8.11.10",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 interface Pet {
   id: number;
@@ -11,46 +11,52 @@ interface Pet {
 
 interface PetFinderProps {
   onDataFetched: (pets: Pet[]) => void;
+  onError: (err: any) => void;
+  onLoading: () => void;
+  filters: { age: string; species: string };
+  page: number;
 }
 
-const PetFinder: React.FC<PetFinderProps> = ({ onDataFetched }) => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+const PetFinder: React.FC<PetFinderProps> = ({
+  onDataFetched,
+  onError,
+  onLoading,
+  filters,
+  page,
+}) => {
   useEffect(() => {
     const fetchPets = async () => {
-      setLoading(true);
-      setError(null);
+      onLoading();
       try {
-        const response = await fetch("https://api.petfinder.com/v2/animals", {
-          headers: {
-            Authorization: `Bearer YOUR_ACCESS_TOKEN`,
-          },
+        const params = new URLSearchParams({
+          ...filters,
+          page: page.toString(),
         });
+
+        const response = await fetch(
+          `https://api.petfinder.com/v2/animals?${params.toString()}`,
+          {
+            headers: {
+              Authorization: `Bearer YOUR_ACCESS_TOKEN`,
+            },
+          }
+        );
+
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
+
         const data = await response.json();
         onDataFetched(data.animals);
       } catch (err) {
-        setError(
+        onError(
           err instanceof Error ? err.message : "An unknown error occurred"
         );
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchPets();
-  }, [onDataFetched]);
-
-  if (loading) {
-    return <p className="text-center text-gray-600">Loading pets...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center text-red-600">{error}</p>;
-  }
+  }, [onDataFetched, onError, onLoading, filters, page]);
 
   return null;
 };

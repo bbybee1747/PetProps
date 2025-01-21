@@ -3,7 +3,7 @@ import HomePage from "./pages/HomePage.tsx";
 import AdoptionForm from "./pages/AdoptionForm.tsx";
 import AboutPage from "./pages/About.tsx";
 import ContactPage from "./pages/Contact.tsx";
-// import UserProfile from "./pages/UserProfile.tsx";
+import PetDetails from "./pages/PetDetails.tsx";
 import PetList from "./pages/PetList.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import Header from "./components/Header.tsx";
@@ -20,6 +20,7 @@ function App() {
         <Route path="*" element={<ErrorPage />} />
         <Route path="/Contact" element={<ContactPage />} />
         <Route path="/PetList" element={<PetList />} />
+        <Route path="/pets/:petId" element={<PetDetails />} />
       </Routes>
       <Footer />
     </Router>

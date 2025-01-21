@@ -29,7 +29,10 @@ const HomePage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 text-center"
+            onClick={() => (window.location.href = "/PetList")}
+          >
             <img
               src={whiteDog}
               alt="Adoptable pet"

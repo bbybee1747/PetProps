@@ -1,12 +1,18 @@
 import { Router } from 'express';
-import authRoutes from './auth-routes.js';
-import apiRoutes from './api/index.js';
-import { authenticateToken } from '../middleware/auth.js';
+import adoptionFormsRouter from './AdoptionForms';
+import userFormRoutes from './userFormRoutes';
+import petsRouter from './pets';
+import authRoutes from './auth-routes';
 
 const router = Router();
 
-router.use('/auth', authRoutes);
+console.log("Index routes initialized");
 
-router.use('/api',authenticateToken, apiRoutes);
 
+router.use('/adoption-forms', adoptionFormsRouter);
+router.use('/users', userFormRoutes);
+router.use('/pets', petsRouter);
+router.use('/auth', authRoutes); 
+
+console.log("Index routes loaded");
 export default router;
