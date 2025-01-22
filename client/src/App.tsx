@@ -5,6 +5,7 @@ import AboutPage from "./pages/About.tsx";
 import ContactPage from "./pages/Contact.tsx";
 import PetDetails from "./pages/PetDetails.tsx";
 import PetList from "./pages/PetList.tsx";
+import UserProfile from "./pages/UserProfile.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import Header from "./components/Header.tsx";
 import Footer from "./components/Footer.tsx";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Contact" element={<ContactPage />} />
         <Route path="/PetList" element={<PetList />} />
         <Route path="/pets/:petId" element={<PetDetails />} />
+        <Route path="/UserProfile" element={<UserProfile />} />
       </Routes>
       <Footer />
     </Router>

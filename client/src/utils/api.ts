@@ -35,3 +35,41 @@ export const savePetToProfile = async (userId: number, petId: number): Promise<v
       throw new Error(error.response?.data?.message || 'Failed to save pet.');
   }
 };
+
+// Fetch user information
+export const fetchUser = async (userId: string): Promise<void> => {
+  try {
+    const token = localStorage.getItem("token"); 
+    const response = await axios.get(
+      `${API_BASE_URL}/user-profile/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error('Error fetching user:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch user.');
+  }
+};
+
+// Fetch user's pets
+export const fetchUserPets = async (userId: string): Promise<void> => {
+  try {
+    const token = localStorage.getItem("token"); 
+    const response = await axios.get(
+      `${API_BASE_URL}/user-profile/${userId}/pets`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error('Error fetching user pets:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch user pets.');
+  }
+};
