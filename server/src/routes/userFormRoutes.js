@@ -70,4 +70,55 @@ router.delete('/user-profile/:userId', auth_1.authenticateJWT, (req, res) => __a
         res.status(500).json({ message: 'Internal server error.' });
     }
 }));
+router.post('/user-profile/:userId/save-pet', auth_1.authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const { petId } = req.body;
+    if (!petId) {
+        res.status(400).json({ message: 'Pet ID is required.' });
+        return;
+    }
+    try {
+        // Check if the pet is already saved
+        const checkQuery = `
+            SELECT * FROM user_saved_pets WHERE user_id = $1 AND pet_id = $2;
+        `;
+        const checkResult = yield (0, db_1.query)(checkQuery, [userId, petId]);
+        if (checkResult.rows.length > 0) {
+            res.status(400).json({ message: 'Pet is already saved.' });
+            return;
+        }
+        // Insert the saved pet
+        const insertQuery = `
+            INSERT INTO user_saved_pets (user_id, pet_id)
+            VALUES ($1, $2)
+            RETURNING id, user_id, pet_id, created_at;
+        `;
+        const insertResult = yield (0, db_1.query)(insertQuery, [userId, petId]);
+        res.status(201).json({
+            message: 'Pet saved successfully.',
+            savedPet: insertResult.rows[0],
+        });
+    }
+    catch (error) {
+        console.error('Error saving pet:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}));
+router.get('/user-profile/:userId/saved-pets', auth_1.authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        const sql = `
+            SELECT pet_id, created_at
+            FROM user_saved_pets
+            WHERE user_id = $1
+            ORDER BY created_at DESC;
+        `;
+        const result = yield (0, db_1.query)(sql, [userId]);
+        res.status(200).json(result.rows);
+    }
+    catch (error) {
+        console.error('Error fetching saved pets:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}));
 exports.default = router;

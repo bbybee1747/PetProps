@@ -20,7 +20,6 @@ const AdoptionForm: React.FC = () => {
   });
 
   useEffect(() => {
-    // Fetch user data from the database
     const fetchUserData = async () => {
       const userData = {
         user_name: "John Doe",

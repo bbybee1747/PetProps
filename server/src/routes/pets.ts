@@ -9,8 +9,8 @@ console.log("Pets routes initialized");
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const { age, gender, species, status, location, distance, page = 1 } = req.query; 
-    const limit = 5; 
+    const { age, gender, species, location, distance, page = 1 } = req.query; 
+    const limit = 9; 
 
     const token = await fetchAccessToken();
     if (!token) {
@@ -19,14 +19,13 @@ router.get("/", async (req: Request, res: Response) => {
     const params: any = {
       page,
       limit,
-      status: status || "adoptable",
+      ...(age && { age }),
+      ...(gender && { gender }),
+      ...(species && { type: species }),
+      ...(location && { location }),
+      ...(distance && { distance }),
     };
 
-    if (age) params.age = age;
-    if (gender) params.gender = gender;
-    if (species) params.species = species 
-    if (location) params.location = location;
-    if (distance) params.distance = distance;
 
     const { data } = await axios.get("https://api.petfinder.com/v2/animals", {
       headers: {

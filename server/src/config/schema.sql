@@ -28,3 +28,12 @@ CREATE TABLE adoption_forms (
     status VARCHAR(100) DEFAULT 'pending',
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE user_saved_pets (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    pet_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, pet_id)
+);
+

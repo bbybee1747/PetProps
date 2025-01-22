@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchPets } from "../utils/api";
+import cat from "../assets/emre-153_VPk1NZQ-unsplash.jpg";
 
 interface Pet {
   id: number;
@@ -21,7 +22,7 @@ const PetList: React.FC = () => {
     species: "",
     gender: "",
     location: "",
-    distance: "25",
+    distance: "",
   });
   const navigate = useNavigate();
 
@@ -53,11 +54,20 @@ const PetList: React.FC = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Available Pets
-        </h2>
+      <div
+        className="relative bg-cover bg-center h-[40vh]"
+        style={{
+          backgroundImage: `url(${cat})`,
+        }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <h1 className="text-white text-4xl md:text-6xl font-bold text-center">
+            Available Pets
+          </h1>
+        </div>
+      </div>
 
+      <div className="container mx-auto px-4 py-8">
         <div className="flex flex-wrap gap-4 mb-6">
           <div>
             <label
