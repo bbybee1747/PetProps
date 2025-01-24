@@ -29,12 +29,15 @@
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/node-geocoder": "^4.2.6",
     "@types/pg": "^8.11.10",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
+    "i": "^0.3.7",
     "jsonwebtoken": "^9.0.2",
     "jwt": "^0.2.0",
+    "node-geocoder": "^4.4.1",
     "sequelize": "^6.37.5"
   }
 }

@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPets } from "../utils/api";
+import { MapContainer, TileLayer } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import cat from "../assets/emre-153_VPk1NZQ-unsplash.jpg";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 const PetDetails: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const [pet, setPet] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [rainbowEffect, setRainbowEffect] = useState(false);
+  const [coordinates, setCoordinates] = useState<[number, number] | null>(null); // For latitude and longitude
 
   useEffect(() => {
     const loadPetDetails = async () => {
@@ -20,6 +32,25 @@ const PetDetails: React.FC = () => {
           (p: any) => p.id === parseInt(petId || "0")
         );
         setPet(selectedPet);
+
+        if (
+          selectedPet?.contact?.address?.city &&
+          selectedPet?.contact?.address?.state
+        ) {
+          const city = selectedPet.contact.address.city;
+          const state = selectedPet.contact.address.state;
+
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?city=${city}&state=${state}&format=json`
+          );
+          const result = await response.json();
+          if (result && result.length > 0) {
+            const { lat, lon } = result[0];
+            setCoordinates([parseFloat(lat), parseFloat(lon)]);
+          } else {
+            console.error("Geocoding failed: No results found.");
+          }
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -29,17 +60,6 @@ const PetDetails: React.FC = () => {
 
     loadPetDetails();
   }, [petId]);
-
-  useEffect(() => {
-    if (pet) {
-      const timer = setTimeout(() => {
-        setRainbowEffect(true);
-        setTimeout(() => setRainbowEffect(false), 3000);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [pet]);
 
   if (loading)
     return (
@@ -59,22 +79,6 @@ const PetDetails: React.FC = () => {
 
   return pet ? (
     <div className="bg-gray-100 min-h-screen">
-      <style>{`
-        @keyframes rainbow {
-          0% { color: red; }
-          16.67% { color: pink; }
-          33.33% { color: neon yellow; }
-          50% { color: green; }
-          66.67% { color: blue; }
-          83.33% { color: indigo; }
-          100% { color: violet; }
-        }
-
-        .rainbow-text {
-          animation: rainbow 1s linear infinite;
-        }
-      `}</style>
-
       <div
         className="relative bg-cover bg-center h-[40vh]"
         style={{
@@ -82,11 +86,7 @@ const PetDetails: React.FC = () => {
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1
-            className={`text-white text-4xl md:text-6xl font-bold text-center transition-all duration-500 ${
-              rainbowEffect ? "rainbow-text" : ""
-            }`}
-          >
+          <h1 className="text-white text-4xl md:text-6xl font-bold text-center">
             {pet.name}
           </h1>
         </div>
@@ -138,6 +138,25 @@ const PetDetails: React.FC = () => {
           <p className="text-gray-700 mb-2">
             <strong>Postcode:</strong> {pet.contact.address.postcode || "N/A"}
           </p>
+
+          <div className="w-full h-64 mt-6">
+            {coordinates ? (
+              <MapContainer
+                center={coordinates}
+                zoom={13}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+              </MapContainer>
+            ) : (
+              <p className="text-gray-700 text-center">
+                Unable to load map for the specified location.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

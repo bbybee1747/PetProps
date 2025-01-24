@@ -78,7 +78,6 @@ router.post('/user-profile/:userId/save-pet', auth_1.authenticateJWT, (req, res)
         return;
     }
     try {
-        // Check if the pet is already saved
         const checkQuery = `
             SELECT * FROM user_saved_pets WHERE user_id = $1 AND pet_id = $2;
         `;
@@ -87,7 +86,6 @@ router.post('/user-profile/:userId/save-pet', auth_1.authenticateJWT, (req, res)
             res.status(400).json({ message: 'Pet is already saved.' });
             return;
         }
-        // Insert the saved pet
         const insertQuery = `
             INSERT INTO user_saved_pets (user_id, pet_id)
             VALUES ($1, $2)
