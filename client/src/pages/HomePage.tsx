@@ -4,6 +4,8 @@ import whiteDog from "../assets/joe-caione-qO-PIF84Vxg-unsplash.jpg";
 import cat from "../assets/chris-abney-mAsKA0jFfeQ-unsplash.jpg";
 
 const HomePage = () => {
+
+
   return (
     <div className="bg-blue-100 min-h-screen">
       <div
@@ -24,15 +26,13 @@ const HomePage = () => {
           <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
             We are a pet adoption app that connects you with loving pets looking
             for a home. Browse pets, fill out adoption forms, and manage your
-            profile with ease!
+            Profile with ease!
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div
-            className="bg-white rounded-lg shadow-lg p-6 text-center"
-            onClick={() => (window.location.href = "/PetList")}
-          >
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer" 
+          onClick={() => window.location.href='/PetList'}>
             <img
               src={whiteDog}
               alt="Adoptable pet"
@@ -44,7 +44,9 @@ const HomePage = () => {
               friend.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
+            onClick={() => window.location.href='/AdoptionForm'}>
             <img
               src={cat}
               alt="Adoption form"
@@ -58,7 +60,9 @@ const HomePage = () => {
               pet.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
+            onClick={() => window.location.href='/UserProfile'}>
             <img
               src={ladyWithDog}
               alt="User profile"
