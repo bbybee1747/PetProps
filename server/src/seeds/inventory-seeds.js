@@ -1,4 +1,8 @@
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const insertPetsQuery = `
 INSERT INTO pets (name, age, gender, species, breed_primary, breed_secondary, breed_mixed, photos, description, contact_email, contact_phone, contact_address1, contact_address2, contact_city, contact_state, contact_postcode, status)
 VALUES 
@@ -11,4 +15,3 @@ VALUES
 ('Lily', 'Baby', 'Female', 'Rabbit', 'Dwarf Hotot', NULL, FALSE, '[{"small": "small7.jpg", "medium": "medium7.jpg", "large": "large7.jpg", "full": "full7.jpg"}]', 'An adorable baby rabbit.', NULL, NULL, NULL, NULL, 'Austin', 'TX', '73301', 'Available'),
 ('Milo', 'Senior', 'Male', 'Cat', 'Maine Coon', NULL, FALSE, '[{"small": "small8.jpg", "medium": "medium8.jpg", "large": "large8.jpg", "full": "full8.jpg"}]', 'A gentle and affectionate senior cat.', 'milo@email.com', '800-555-0199', '987 Walnut St', 'Suite 10', 'Seattle', 'WA', '98101', 'Adopted');
 `;
- 
