@@ -37,3 +37,18 @@ CREATE TABLE user_saved_pets (
     UNIQUE (user_id, pet_id)
 );
 
+CREATE TABLE pets (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age VARCHAR(50) NOT NULL,
+    gender VARCHAR(20) NOT NULL,
+    species VARCHAR(50) NOT NULL,
+    breed_primary VARCHAR(255) NOT NULL,
+    breed_secondary VARCHAR(255),
+    breed_mixed BOOLEAN NOT NULL,
+    photos JSONB NOT NULL,
+    description TEXT NOT NULL,
+    status VARCHAR(50) NOT NULL
+);
+
+

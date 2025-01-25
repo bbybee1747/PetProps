@@ -24,13 +24,13 @@ const HomePage = () => {
           <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
             We are a pet adoption app that connects you with loving pets looking
             for a home. Browse pets, fill out adoption forms, and manage your
-            profile with ease!
+            Profile with ease!
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
           <div
-            className="bg-white rounded-lg shadow-lg p-6 text-center"
+            className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
             onClick={() => (window.location.href = "/PetList")}
           >
             <img
@@ -44,7 +44,10 @@ const HomePage = () => {
               friend.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
+            onClick={() => (window.location.href = "/AdoptionForm")}
+          >
             <img
               src={cat}
               alt="Adoption form"
@@ -58,7 +61,10 @@ const HomePage = () => {
               pet.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
+            onClick={() => (window.location.href = "/UserProfile")}
+          >
             <img
               src={ladyWithDog}
               alt="User profile"

@@ -1,38 +1,72 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+// Assuming you have some way to determine if a user is authenticated
+const isAuthenticated = false; // Replace with actual authentication logic
 
 const NavBar = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    if (path === "/AdoptionForm" || path === "/UserProfile") {
+      if (!isAuthenticated) {
+        // Redirect to SignIn page with the intended destination as a query parameter
+        navigate(`/SignIn?redirect=${path}`);
+        return;
+      }
+    }
+    navigate(path);
+  };
+
   return (
     <nav className="bg-gray-800 p-4">
       <ul className="flex space-x-4 text-white font-semibold">
         <li>
-          <Link className="hover:underline" to="/">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/")}
+          >
             Home
-          </Link>
+          </button>
         </li>
         <li>
-          <Link className="hover:underline" to="/About">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/About")}
+          >
             About
-          </Link>
+          </button>
         </li>
         <li>
-          <Link className="hover:underline" to="/AdoptionForm">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/AdoptionForm")}
+          >
             Adoption Form
-          </Link>
+          </button>
         </li>
         <li>
-          <Link className="hover:underline" to="/Contact">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/Contact")}
+          >
             Contact
-          </Link>
+          </button>
         </li>
         <li>
-          <Link className="hover:underline" to="/PetList">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/PetList")}
+          >
             Pet List
-          </Link>
+          </button>
         </li>
         <li>
-          <Link className="hover:underline" to="/UserProfile">
+          <button
+            className="hover:underline"
+            onClick={() => handleNavigation("/UserProfile")}
+          >
             User Profile
-          </Link>
+          </button>
         </li>
       </ul>
     </nav>
