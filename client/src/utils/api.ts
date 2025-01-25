@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-
-const API_BASE_URL = 'http://localhost:5000/api'; 
+const API_BASE_URL = 'http://localhost:8000/api'; 
 
 export const fetchPets = async (
   filters: { age?: string; gender?: string; species?: string; location?: string; distance?: string },
@@ -37,76 +36,20 @@ export const savePetToProfile = async (userId: number, petId: number): Promise<v
   }
 };
 
-export const fetchUser = async (userId: string): Promise<User> => {
-  try {
-    const token = localStorage.getItem("token"); 
-    const response = await axios.get(
-      `${API_BASE_URL}/user-profile/${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    console.error('Error fetching user:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user.');
-  }
-};
+  const api = axios.create({
+    baseURL: 'http://localhost:8000/api', // Change this to your backend URL
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  address: string;
-  phoneNumber: string;
-  description: string;
-  photoUrl: string;
-  pets: Pet[];
-}
-
-interface Pet {
-  id: number;
-  name: string;
-  age: string;
-  species: string;
-  photos: { medium: string }[];
-  breeds?: { primary?: string; secondary?: string; mixed?: boolean };
-}
-
-
-export const fetchUserPets = async (userId: string): Promise<Pet[]> => {
-  try {
-    const token = localStorage.getItem("token"); 
-    const response = await axios.get(
-      `${API_BASE_URL}/user-profile/${userId}/pets`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    console.error('Error fetching user pets:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user pets.');
-  }
-};
-
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export const fetchUsers = async () => {
-  try {
-    const response = await api.get('/users');
-    return response.data; 
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    throw error;  
-  }
-};
+  // Fetch users from the backend
+  export const fetchUsers = async () => {
+    try {
+      const response = await api.get('/users');
+      return response.data;  // Return the data from the response
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;  // Rethrow the error to handle it in the calling component
+    }
+  };

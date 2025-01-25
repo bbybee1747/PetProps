@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import routes from "./routes"; 
+import routes from "./routes";
+import sequelize from './sequelize';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,8 @@ app.use("*", (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+sequelize.sync().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });

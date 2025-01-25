@@ -1,9 +1,19 @@
 import { Router, Request, Response } from 'express';
 import { query } from '../config/db';
 import { authenticateJWT } from '../middleware/auth';
-import { UpdateUser } from '../models/User';
+import User, { UpdateUser } from '../models/User';
 
 const router = Router();
+
+router.get('/api/users', async (req: Request, res: Response) => {
+    try {
+      const users = await User.findAll();
+      res.json(users);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  });
 
 router.get('/user-profile/:userId', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const { userId } = req.params;
