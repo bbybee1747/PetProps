@@ -1,8 +1,10 @@
 // All of the user information and all of their current pet information will be displayed on this page.
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchUser, fetchUserPets } from "../utils/api";
+import fetchUser from "../utils/api";
 import cat from "../assets/emre-153_VPk1NZQ-unsplash.jpg";
+import fetchUserPets from "../utils/api";
+import { fetchUserProfile } from "../utils/api";
 
 interface User {
   id: string;
@@ -41,13 +43,13 @@ const UserProfile: React.FC = () => {
 
         const fetchedUser = await fetchUser(userId);
         const userPets = await fetchUserPets(userId);
+        const userProfile = await fetchUserProfile(Number(userId));
 
-        // Ensure that fetchedUser and userPets are objects
         if (typeof fetchedUser !== "object" || !Array.isArray(userPets)) {
           throw new Error("Invalid data received from the API.");
         }
 
-        setUser({ ...fetchedUser, pets: userPets });
+        setUser({ ...fetchedUser, pets: userPets, ...userProfile });
       } catch (err: any) {
         setError(err.message);
       } finally {

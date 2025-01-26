@@ -1,12 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const sequelize_2 = require("sequelize");
-const sequelize = new sequelize_1.Sequelize('database', 'username', 'password', {
-    host: 'localhost',
-    dialect: 'postgres',
-});
-class User extends sequelize_2.Model {
+const sequelize_2 = __importDefault(require("../sequelize")); // Use your central Sequelize instance
+class User extends sequelize_1.Model {
 }
 User.init({
     id: {
@@ -34,7 +33,9 @@ User.init({
         defaultValue: sequelize_1.DataTypes.NOW,
     },
 }, {
-    sequelize,
+    sequelize: sequelize_2.default, // Use the central Sequelize instance
     modelName: 'User',
+    tableName: 'user', // Map to the correct table name
+    timestamps: false, // Disable default `createdAt` and `updatedAt`
 });
 exports.default = User;

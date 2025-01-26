@@ -1,8 +1,4 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 const insertPetsQuery = `
 INSERT INTO pets (name, age, gender, species, breed_primary, breed_secondary, breed_mixed, photos, description, contact_email, contact_phone, contact_address1, contact_address2, contact_city, contact_state, contact_postcode, status)
 VALUES 

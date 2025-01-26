@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD!,
   {
     host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT!, 10), // Ensure the port is parsed as an integer
+    port: parseInt(process.env.DB_PORT!, 10),
     dialect: 'postgres',
   }
 );

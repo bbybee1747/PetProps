@@ -11,20 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_seeds_1 = require("./user-seeds");
 const Adoption_Form_Seeds_1 = require("./Adoption-Form-Seeds");
-const seedAll = () => __awaiter(void 0, void 0, void 0, function* () {
+const runSeeds = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Seeding database...");
     try {
-        console.log('Seeding database...');
+        // Seed users first
         yield (0, user_seeds_1.seedUsers)();
-        console.log('Users seeded.');
+        console.log("Users seeded.");
+        // Then seed adoption forms
         yield (0, Adoption_Form_Seeds_1.seedAdoptionForms)();
-        console.log('Adoption forms seeded.');
-        console.log('All seeding completed!');
+        console.log("Adoption forms seeded.");
+        console.log("All seeding completed!");
     }
-    catch (err) {
-        console.error('Error during seeding:', err);
-    }
-    finally {
-        process.exit();
+    catch (error) {
+        console.error("Error during seeding:", error);
     }
 });
-seedAll();
+runSeeds();

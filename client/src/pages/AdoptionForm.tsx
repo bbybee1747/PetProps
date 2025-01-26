@@ -1,16 +1,9 @@
-// If we have time then we should make this form a little bit more dynamic and add styling to it.
-// This area should pull information from the postgres database in the user profile page and populate the form with the user's information.
-// There will also be additional fields that the user will need to fill out.
-// We also need to figure out where to send this information once it is submitted. Should go to an admin location for approval, maybe an admin email address.
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
 
 const AdoptionForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    user_name: "",
-    user_email: "",
-    user_phone: "",
-    user_address: "",
+    user_id: 1,
     pet_id: "",
     pet_name: "",
     pet_type: "",
@@ -19,22 +12,7 @@ const AdoptionForm: React.FC = () => {
     reason: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userData = {
-        user_name: "John Doe",
-        user_email: "john.doe@example.com",
-        user_phone: "123-456-7890",
-        user_address: "123 Main St, Springfield",
-      };
-      setFormData((prevData) => ({
-        ...prevData,
-        ...userData,
-      }));
-    };
-
-    fetchUserData();
-  }, []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -46,11 +24,72 @@ const AdoptionForm: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const requiredFields = [
+      "user_id",
+      "pet_id",
+      "pet_name",
+      "pet_type",
+      "pet_breed",
+      "pet_age",
+      "reason",
+    ];
+
+    for (const field of requiredFields) {
+      const value = formData[field as keyof typeof formData];
+      if (typeof value === "string" && !value.trim()) {
+        console.error(`Validation failed: ${field} is missing or empty.`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // We need to add an API integration to save the form to the database
-    // Send a copy to the admin email for review
+
+    console.log("Form data before submission:", formData);
+
+    if (!validateForm()) {
+      alert("Please fill out all required fields before submitting.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post(
+        "http://localhost:5000/api/adoption-forms",
+        formData,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Application submitted successfully!");
+        setFormData({
+          user_id: formData.user_id,
+          pet_id: "",
+          pet_name: "",
+          pet_type: "",
+          pet_breed: "",
+          pet_age: "",
+          reason: "",
+        });
+      }
+    } catch (error: any) {
+      console.error(
+        "Error submitting adoption form:",
+        error.response?.data || error.message
+      );
+      alert(
+        error.response?.data?.message ||
+          "There was an issue submitting your application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -62,80 +101,22 @@ const AdoptionForm: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="name"
+              htmlFor="petId"
               className="block text-gray-600 font-medium mb-1"
             >
-              Your Name
+              Pet ID
             </label>
             <input
               type="text"
-              id="name"
-              name="user_name"
-              value={formData.user_name}
+              id="petId"
+              name="pet_id"
+              value={formData.pet_id}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-              placeholder="Enter your name"
+              placeholder="Enter the pet's ID"
               required
             />
           </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-gray-600 font-medium mb-1"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="user_email"
-              value={formData.user_email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="phone"
-              className="block text-gray-600 font-medium mb-1"
-            >
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="user_phone"
-              value={formData.user_phone}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-              placeholder="Enter your phone number"
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="address"
-              className="block text-gray-600 font-medium mb-1"
-            >
-              Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="user_address"
-              value={formData.user_address}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-              placeholder="Enter your address"
-              required
-            />
-          </div>
-
           <div>
             <label
               htmlFor="petName"
@@ -154,13 +135,66 @@ const AdoptionForm: React.FC = () => {
               required
             />
           </div>
-
+          <div>
+            <label
+              htmlFor="petType"
+              className="block text-gray-600 font-medium mb-1"
+            >
+              Pet Type
+            </label>
+            <input
+              type="text"
+              id="petType"
+              name="pet_type"
+              value={formData.pet_type}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+              placeholder="Enter the pet's type (e.g., Dog, Cat)"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="petBreed"
+              className="block text-gray-600 font-medium mb-1"
+            >
+              Pet Breed
+            </label>
+            <input
+              type="text"
+              id="petBreed"
+              name="pet_breed"
+              value={formData.pet_breed}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+              placeholder="Enter the pet's breed"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="petAge"
+              className="block text-gray-600 font-medium mb-1"
+            >
+              Pet Age
+            </label>
+            <input
+              type="number"
+              id="petAge"
+              name="pet_age"
+              value={formData.pet_age}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+              placeholder="Enter the pet's age"
+              required
+            />
+          </div>
           <div>
             <label
               htmlFor="reason"
               className="block text-gray-600 font-medium mb-1"
             >
-              Why do you want to adopt?
+              Reason to Adopt
             </label>
             <textarea
               id="reason"
@@ -168,17 +202,21 @@ const AdoptionForm: React.FC = () => {
               value={formData.reason}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-              placeholder="Tell us why you want to adopt this pet"
+              placeholder="Why do you want to adopt this pet?"
               rows={4}
               required
             ></textarea>
           </div>
-
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:ring focus:ring-blue-300 focus:outline-none"
+            disabled={isSubmitting}
+            className={`w-full bg-blue-500 text-white py-2 px-4 rounded-lg ${
+              isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-600"
+            }`}
           >
-            Submit Application
+            {isSubmitting ? "Submitting..." : "Submit Application"}
           </button>
         </form>
       </div>

@@ -9,11 +9,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const pool = new pg_1.Pool({
     user: process.env.DB_USER,
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST,
     database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD || '',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
+    password: process.env.DB_PASSWORD,
+    port: parseInt(process.env.DB_PORT || "5432", 10),
 });
-const query = (text, params) => pool.query(text, params);
+const query = (text, params) => {
+    return pool.query(text, params);
+};
 exports.query = query;
-exports.default = pool;

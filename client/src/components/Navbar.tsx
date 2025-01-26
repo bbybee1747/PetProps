@@ -9,7 +9,6 @@ const NavBar = () => {
   const handleNavigation = (path: string) => {
     if (path === "/AdoptionForm" || path === "/UserProfile") {
       if (!isAuthenticated) {
-        // Redirect to SignIn page with the intended destination as a query parameter
         navigate(`/SignIn?redirect=${path}`);
         return;
       }

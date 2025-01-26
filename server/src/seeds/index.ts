@@ -1,23 +1,20 @@
-import { query } from '../config/db';
-import { seedUsers } from './user-seeds';
-import { seedAdoptionForms } from './Adoption-Form-Seeds';
+import { seedUsers } from "./user-seeds";
+import { seedAdoptionForms } from "./Adoption-Form-Seeds";
 
-const seedAll = async () => {
-    try {
-        console.log('Seeding database...');
-        
-        await seedUsers();
-        console.log('Users seeded.');
+const runSeeds = async () => {
+  console.log("Seeding database...");
 
-        await seedAdoptionForms();
-        console.log('Adoption forms seeded.');
+  try {
+    await seedUsers();
+    console.log("Users seeded.");
 
-        console.log('All seeding completed!');
-    } catch (err) {
-        console.error('Error during seeding:', err);
-    } finally {
-        process.exit(); 
-    }
+    await seedAdoptionForms();
+    console.log("Adoption forms seeded.");
+
+    console.log("All seeding completed!");
+  } catch (error) {
+    console.error("Error during seeding:", error);
+  }
 };
 
-seedAll();
+runSeeds();

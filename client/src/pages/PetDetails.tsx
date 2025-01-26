@@ -20,7 +20,7 @@ const PetDetails: React.FC = () => {
   const [pet, setPet] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [coordinates, setCoordinates] = useState<[number, number] | null>(null); // For latitude and longitude
+  const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     const loadPetDetails = async () => {

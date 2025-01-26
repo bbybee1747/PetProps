@@ -1,24 +1,22 @@
-import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
-import { CustomJwtPayload } from './models/user'; 
+import { JwtPayload as DefaultJwtPayload } from "jsonwebtoken";
 
-export interface JwtPayload extends DefaultJwtPayload {
-    id: number;
-    email: string;
-    username?: string;
+export interface CustomJwtPayload extends DefaultJwtPayload {
+  id: number;
+  email: string;
+  username?: string;
 }
 
-declare module 'jsonwebtoken' {
-    export interface JwtPayload extends DefaultJwtPayload {
-        id: number;
-        email: string;
-        username?: string;
-    }
+declare module 'nodemailer';
+
+
+declare module "jsonwebtoken" {
+  export interface JwtPayload extends CustomJwtPayload {}
 }
 
 declare global {
-    namespace Express {
-        interface Request {
-            user?: CustomJwtPayload;
-        }
+  namespace Express {
+    interface Request {
+      user?: CustomJwtPayload;
     }
+  }
 }

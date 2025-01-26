@@ -1,6 +1,49 @@
+import { useState } from "react";
 import catInPublic from "../assets/emre-153_VPk1NZQ-unsplash.jpg";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [status, setStatus] = useState<string | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { name, email, message } = formData;
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/contact/send-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, message }),
+        }
+      );
+
+      if (response.ok) {
+        setStatus("Email sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("Failed to send email. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setStatus("An error occurred. Please try again.");
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <div
@@ -23,7 +66,7 @@ const Contact = () => {
             If you have any questions or need assistance, please fill out the
             form below to contact the adoption admin.
           </p>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
                 className="block text-gray-700 font-medium mb-2"
@@ -35,6 +78,8 @@ const Contact = () => {
                 type="text"
                 id="name"
                 name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Enter your name"
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
@@ -52,6 +97,8 @@ const Contact = () => {
                 type="email"
                 id="email"
                 name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
@@ -68,6 +115,8 @@ const Contact = () => {
               <textarea
                 id="message"
                 name="message"
+                value={formData.message}
+                onChange={handleChange}
                 placeholder="Write your message"
                 rows={5}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -84,6 +133,7 @@ const Contact = () => {
               </button>
             </div>
           </form>
+          {status && <p className="text-center mt-4 text-gray-700">{status}</p>}
         </div>
       </div>
     </div>

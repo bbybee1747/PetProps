@@ -8,7 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sequelize = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT, 10), // Ensure the port is parsed as an integer
+    port: parseInt(process.env.DB_PORT, 10),
     dialect: 'postgres',
 });
 exports.default = sequelize;
