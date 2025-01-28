@@ -1,0 +1,23 @@
+{
+  "name": "petprops",
+  "version": "1.0.0",
+  "description": "![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "cd client && bun run build",
+    "start": "cd server && bun run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbybee1747/PetProps.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bbybee1747/PetProps/issues"
+  },
+  "homepage": "https://github.com/bbybee1747/PetProps#readme"
+}
