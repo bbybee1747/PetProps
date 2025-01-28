@@ -2,7 +2,7 @@ import twoDogs from "../assets/alvan-nee-T-0EW-SEbsE-unsplash.jpg";
 import ladyWithDog from "../assets/bruno-cervera-azsk_6IMT3I-unsplash.jpg";
 import whiteDog from "../assets/joe-caione-qO-PIF84Vxg-unsplash.jpg";
 import cat from "../assets/chris-abney-mAsKA0jFfeQ-unsplash.jpg";
-
+import { Link } from "react-router-dom"; // Import Link
 const HomePage = () => {
   return (
     <div className="bg-blue-100 min-h-screen">
@@ -18,7 +18,6 @@ const HomePage = () => {
           </h1>
         </div>
       </div>
-
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
@@ -27,11 +26,10 @@ const HomePage = () => {
             Profile with ease!
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div
+          <Link
+            to="/PetList"
             className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
-            onClick={() => (window.location.href = "/PetList")}
           >
             <img
               src={whiteDog}
@@ -43,10 +41,10 @@ const HomePage = () => {
               Discover pets available for adoption and find your new furry
               friend.
             </p>
-          </div>
-          <div
+          </Link>
+          <Link
+            to="/AdoptionForm"
             className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
-            onClick={() => (window.location.href = "/AdoptionForm")}
           >
             <img
               src={cat}
@@ -60,10 +58,10 @@ const HomePage = () => {
               Fill out a simple form to express interest in adopting your chosen
               pet.
             </p>
-          </div>
-          <div
+          </Link>
+          <Link
+            to="/UserProfile"
             className="bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer"
-            onClick={() => (window.location.href = "/UserProfile")}
           >
             <img
               src={ladyWithDog}
@@ -77,11 +75,10 @@ const HomePage = () => {
               Manage your profile, track your adoptions, and update your
               preferences.
             </p>
-          </div>
+          </Link>
         </div>
       </div>
     </div>
   );
 };
-
 export default HomePage;

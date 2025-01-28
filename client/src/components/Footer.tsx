@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white py-4">
@@ -5,36 +6,36 @@ const Footer = () => {
         <h2 className="text-xl font-semibold">Pet Props</h2>
         <p className="text-gray-400 mb-4">Connecting pets with loving homes.</p>
         <div className="space-x-4 mb-4">
-          <a
-            href="#"
+          <Link
+            to="/About"
             className="text-gray-400 hover:text-white transition-colors"
           >
             About Us
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/Contact"
             className="text-gray-400 hover:text-white transition-colors"
           >
             Contact
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/FAQ"
             className="text-gray-400 hover:text-white transition-colors"
           >
             FAQ
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/PrivacyPolicy"
             className="text-gray-400 hover:text-white transition-colors"
           >
             Privacy Policy
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/TermsOfService"
             className="text-gray-400 hover:text-white transition-colors"
           >
             Terms of Service
-          </a>
+          </Link>
         </div>
         <p className="text-gray-400 text-sm">
           © {new Date().getFullYear()} Pet Props. All rights reserved.
@@ -43,5 +44,4 @@ const Footer = () => {
     </footer>
   );
 };
-
 export default Footer;
