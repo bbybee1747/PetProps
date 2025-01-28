@@ -30,7 +30,7 @@ const runSeeds = async () => {
   } catch (error) {
     console.error("Error during seeding:", error);
   } finally {
-    await sequelize.close(); // Ensure the database connection is closed
+    await sequelize.close(); 
   }
 };
 
