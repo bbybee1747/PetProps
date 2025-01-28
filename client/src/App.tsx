@@ -5,7 +5,7 @@ import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import PetDetails from "./pages/PetDetails";
 import PetList from "./pages/PetList";
-import ErrorPage from "./pages/ErrorPage";
+import ErrorPage from "./pages/Errorpage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import FAQ from "./components/FAQ";
@@ -30,7 +30,7 @@ function App() {
         <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="/AdoptionForm" element={<AdoptionForm />} />
         <Route path="*" element={<ErrorPage />} />
-        <Route path="/UserProfile/:userId" element={<UserProfile />} />
+        <Route path="/UserProfile" element={<UserProfile />} />
       </Routes>
       <Footer />
     </Router>
