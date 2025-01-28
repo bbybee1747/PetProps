@@ -35,6 +35,8 @@ PetAdoptMe is a web application designed to facilitate the adoption of pets from
 - Shelter Listings: Directory of participating shelters and rescue organizations.
 - User Accounts: Secure user accounts for adopters to save favorite pets, track applications, and receive updates.
 - Admin Dashboard: Tools for shelter administrators to manage pet listings, adoption applications, and user accounts.
+- Email api is being used so when the user uses the contact page it will send all of the information to the admins email address.
+- Added a map function for utilization of an api to see the location of the pets that the user selects for adoption.
 
   ## Contact-Me
 
@@ -43,10 +45,15 @@ PetAdoptMe is a web application designed to facilitate the adoption of pets from
 
   ## Contributors
 
-  - Tara Means / Brandon Bybee / Bud Triplett / Rafael Guerra
+  - Brandon Bybee / Bud Triplett / Rafael Guerra / Michael Ester
 
   ## Testing
 
-  License: MIT
+  1. Client side: "Bun run build" to recompile the project.
+  2. Sever side: Create data base through the config file.
+  3. Run the seed file,
+  4. Run "npx tsc" to compile.
+  5. Server side: "Bun run start" to get application running.
 
+  License: MIT
   https://opensource.org/licenses/MIT
