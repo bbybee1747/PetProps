@@ -5,9 +5,9 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
-    "build": "cd client && bun run build",
+    "build": "cd client && bun run build && cd ../server && bun run seed",
     "install": "cd client && bun install && cd ../server && bun install",
-    "start": "cd server && bun run start"
+    "start": "cd server && bun run start "
   },
   "repository": {
     "type": "git",
