@@ -14,10 +14,8 @@ const Adoption_Form_Seeds_1 = require("./Adoption-Form-Seeds");
 const runSeeds = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Seeding database...");
     try {
-        // Seed users first
         yield (0, user_seeds_1.seedUsers)();
         console.log("Users seeded.");
-        // Then seed adoption forms
         yield (0, Adoption_Form_Seeds_1.seedAdoptionForms)();
         console.log("Adoption forms seeded.");
         console.log("All seeding completed!");

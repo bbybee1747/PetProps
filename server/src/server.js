@@ -16,6 +16,7 @@ app.use((0, cors_1.default)({
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
+app.use(express_1.default.static('../client/dist'));
 app.use(express_1.default.json());
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);

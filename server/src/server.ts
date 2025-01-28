@@ -4,6 +4,7 @@ import routes from "./routes";
 import sequelize from "./sequelize";
 import dotenv from "dotenv";
 
+
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.static('../client/dist'));
 app.use(express.json());
 
 app.use((req, res, next) => {

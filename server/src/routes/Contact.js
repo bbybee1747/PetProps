@@ -23,22 +23,17 @@ router.post("/send-email", (req, res) => __awaiter(void 0, void 0, void 0, funct
         return;
     }
     try {
-        // Initialize MailerSend with the API key from the .env file
         const mailerSend = new mailersend_1.MailerSend({
             apiKey: process.env.MAILERSEND_API_KEY,
         });
-        // Set sender information (your verified sender email in MailerSend)
         const sentFrom = new mailersend_1.Sender("no-reply@trial-ynrw7gy7e8jg2k8e.mlsender.net", "Pet Props Admin");
-        // Add the recipient's email address
         const recipients = [new mailersend_1.Recipient("PetPropsForLife@proton.me", "Pet Props Admin")];
-        // Create email parameters
         const emailParams = new mailersend_1.EmailParams()
             .setFrom(sentFrom)
             .setTo(recipients)
             .setSubject(`Message from ${name}`)
             .setHtml(`<p>${message}</p><p>From: ${name} (${email})</p>`)
             .setText(`${message}\n\nFrom: ${name} (${email})`);
-        // Send the email
         yield mailerSend.email.send(emailParams);
         res.status(200).json({ message: "Email sent successfully!" });
     }
