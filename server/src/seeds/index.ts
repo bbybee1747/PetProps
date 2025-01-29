@@ -1,11 +1,28 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-const sequelize = new Sequelize('database', 'username', 'password', {
-  host: 'localhost',
-  dialect: 'postgres' 
-});
+dotenv.config();
+
 import { seedUsers } from "./user-seeds";
 import { seedAdoptionForms } from "./Adoption-Form-Seeds";
+
+const sequelize = new Sequelize(
+  process.env.DB_NAME!, 
+  process.env.DB_USER!, 
+  process.env.DB_PASSWORD!,
+  {
+    host: process.env.DB_HOST, 
+    port: parseInt(process.env.DB_PORT!, 10),
+    dialect: "postgres", 
+    dialectOptions: {
+      ssl: {
+        require: true, 
+        rejectUnauthorized: false, 
+      },
+    },
+    logging: false, 
+  }
+);
 
 const runSeeds = async () => {
   console.log("Seeding database...");
