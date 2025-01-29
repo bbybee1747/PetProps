@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
+const BACKEND_URL = "https://petprops.onrender.com";
+
 const ADMIN_CREDENTIALS = {
   username: "admin",
   password: "admin123",
@@ -24,30 +26,37 @@ const SignIn: React.FC = () => {
     setIsLoading(true);
     setErrorMessage("");
 
+    console.log("Attempting login with:", username, password);
+
+    // ✅ Hardcoded Admin Login
     if (
       username === ADMIN_CREDENTIALS.username &&
       password === ADMIN_CREDENTIALS.password
     ) {
+      console.log("Admin login successful!");
       localStorage.setItem("token", ADMIN_CREDENTIALS.token);
       localStorage.setItem("userId", ADMIN_CREDENTIALS.userId);
-      console.log("Admin login successful");
       navigate(redirectPath, { replace: true });
       setIsLoading(false);
       return;
     }
 
+    console.log("Admin login failed, attempting normal login...");
+
+    // ✅ Backend API Login
     try {
-      const response = await axios.post("/api/users/login", {
+      const response = await axios.post(`${BACKEND_URL}/api/users/login`, {
         username,
         password,
       });
 
+      console.log("API response:", response);
+
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.user.id);
-      console.log("Sending login data:", { username, password });
-
       navigate(redirectPath, { replace: true });
     } catch (error: any) {
+      console.error("Login error:", error);
       if (error.response && error.response.status === 401) {
         setErrorMessage("Invalid username or password.");
       } else {
@@ -63,7 +72,7 @@ const SignIn: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Pet Props Logo"
-          src="src/assets/PetProp.png"
+          src="/PetProp.png"
           className="mx-auto h-20 w-auto mt-2 mb-2"
         />
         <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
