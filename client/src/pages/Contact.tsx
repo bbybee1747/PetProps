@@ -23,14 +23,11 @@ const Contact = () => {
     const { name, email, message } = formData;
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/contact/send-email",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, message }),
-        }
-      );
+      const response = await fetch("/api/contact/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
 
       if (response.ok) {
         setStatus("Email sent successfully!");

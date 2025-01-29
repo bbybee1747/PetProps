@@ -58,13 +58,9 @@ const AdoptionForm: React.FC = () => {
 
     try {
       setIsSubmitting(true);
-      const response = await axios.post(
-        "http://localhost:5000/api/adoption-forms",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.post("/api/adoption-forms", formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
       if (response.status === 201) {
         alert("Application submitted successfully!");
