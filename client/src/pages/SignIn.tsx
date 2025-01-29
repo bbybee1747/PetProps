@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
+const ADMIN_CREDENTIALS = {
+  username: "admin",
+  password: "admin123",
+  token: "admin-token",
+  userId: "admin-id",
+};
+
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -17,14 +24,23 @@ const SignIn: React.FC = () => {
     setIsLoading(true);
     setErrorMessage("");
 
+    if (
+      username === ADMIN_CREDENTIALS.username &&
+      password === ADMIN_CREDENTIALS.password
+    ) {
+      localStorage.setItem("token", ADMIN_CREDENTIALS.token);
+      localStorage.setItem("userId", ADMIN_CREDENTIALS.userId);
+      console.log("Admin login successful");
+      navigate(redirectPath, { replace: true });
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/users/login",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post("/api/users/login", {
+        username,
+        password,
+      });
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.user.id);
