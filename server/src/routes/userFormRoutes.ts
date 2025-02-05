@@ -131,10 +131,10 @@ router.get("/user-profile/:userId/saved-pets", authenticateJWT, async (req: Requ
 });
 
 router.post("/login", async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { username } });
 
     if (!user) {
       res.status(404).json({ error: "User not found" });
