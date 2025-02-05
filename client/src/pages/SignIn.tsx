@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const BACKEND_URL = "https://petprops.onrender.com";
 
@@ -8,10 +9,11 @@ const ADMIN_CREDENTIALS = {
   username: "admin",
   password: "admin123",
   token: "admin-token",
-  userId: "admin-id",
+  user: { id: 1, name: "Admin User", email: "admin@example.com" },
 };
 
 const SignIn: React.FC = () => {
+  const { login } = useAuth();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -19,7 +21,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const redirectPath = queryParams.get("redirect") || "/";
+  const redirectPath = queryParams.get("redirect") || "/profile";
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,14 +30,12 @@ const SignIn: React.FC = () => {
 
     console.log("Attempting login with:", username, password);
 
-    // ✅ Hardcoded Admin Login
     if (
       username === ADMIN_CREDENTIALS.username &&
       password === ADMIN_CREDENTIALS.password
     ) {
       console.log("Admin login successful!");
-      localStorage.setItem("token", ADMIN_CREDENTIALS.token);
-      localStorage.setItem("userId", ADMIN_CREDENTIALS.userId);
+      login(ADMIN_CREDENTIALS.token, ADMIN_CREDENTIALS.user);
       navigate(redirectPath, { replace: true });
       setIsLoading(false);
       return;
@@ -43,7 +43,6 @@ const SignIn: React.FC = () => {
 
     console.log("Admin login failed, attempting normal login...");
 
-    // ✅ Backend API Login
     try {
       const response = await axios.post(`${BACKEND_URL}/api/users/login`, {
         username,
@@ -52,12 +51,12 @@ const SignIn: React.FC = () => {
 
       console.log("API response:", response);
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.user.id);
+      login(response.data.token, response.data.user);
+
       navigate(redirectPath, { replace: true });
     } catch (error: any) {
       console.error("Login error:", error);
-      if (error.response && error.response.status === 401) {
+      if (error.response?.status === 401) {
         setErrorMessage("Invalid username or password.");
       } else {
         setErrorMessage("An error occurred. Please try again later.");

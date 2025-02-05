@@ -1,6 +1,7 @@
 import sequelize from "../sequelize";
 import seedUsers from "./seedUsers";
 import seedPets from "./seedPets";
+import seedUserProfiles from "./seedUserProfile";
 
 
 const seedDatabase = async () => {
@@ -13,6 +14,7 @@ const seedDatabase = async () => {
 
     await seedUsers();
     await seedPets();
+    await seedUserProfiles();
   
 
     console.log("🎉 Seeding completed successfully!");

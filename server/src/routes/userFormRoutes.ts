@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { authenticateJWT } from "../middleware/auth";
-import { User, UserSavedPets } from "../models"; // ✅ Import from models/index.ts
+import { User, UserSavedPets } from "../models"; 
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -21,11 +21,9 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.get("/user-profile/:userId", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params;
-
+router.get("/user-profile", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findByPk(userId, {
+    const user = await User.findByPk(req.user!.id, {
       attributes: ["id", "username", "email", "createdAt"],
     });
 
@@ -41,9 +39,8 @@ router.get("/user-profile/:userId", authenticateJWT, async (req: Request, res: R
   }
 });
 
-router.put("/user-profile/:userId", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params;
-  const { username, email } = req.body;
+router.put("/user-profile", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+  const { username, email, password } = req.body;
 
   if (!username || !email) {
     res.status(400).json({ message: "Username and email are required." });
@@ -51,7 +48,7 @@ router.put("/user-profile/:userId", authenticateJWT, async (req: Request, res: R
   }
 
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(req.user!.id);
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;
@@ -59,6 +56,11 @@ router.put("/user-profile/:userId", authenticateJWT, async (req: Request, res: R
 
     user.username = username;
     user.email = email;
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10); 
+    }
+
     await user.save();
 
     res.status(200).json({ message: "User profile updated successfully.", user });
@@ -68,11 +70,9 @@ router.put("/user-profile/:userId", authenticateJWT, async (req: Request, res: R
   }
 });
 
-router.delete("/user-profile/:userId", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params;
-
+router.delete("/user-profile", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(req.user!.id);
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;
@@ -86,8 +86,7 @@ router.delete("/user-profile/:userId", authenticateJWT, async (req: Request, res
   }
 });
 
-router.post("/user-profile/:userId/save-pet", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params;
+router.post("/user-profile/save-pet", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
   const { petId } = req.body;
 
   if (!petId) {
@@ -97,7 +96,7 @@ router.post("/user-profile/:userId/save-pet", authenticateJWT, async (req: Reque
 
   try {
     const existingSavedPet = await UserSavedPets.findOne({
-      where: { user_id: userId, pet_id: petId },
+      where: { user_id: req.user!.id, pet_id: petId },
     });
 
     if (existingSavedPet) {
@@ -105,7 +104,7 @@ router.post("/user-profile/:userId/save-pet", authenticateJWT, async (req: Reque
       return;
     }
 
-    const savedPet = await UserSavedPets.create({ user_id: userId, pet_id: petId });
+    const savedPet = await UserSavedPets.create({ user_id: req.user!.id, pet_id: petId });
 
     res.status(201).json({ message: "Pet saved successfully.", savedPet });
   } catch (error) {
@@ -114,12 +113,10 @@ router.post("/user-profile/:userId/save-pet", authenticateJWT, async (req: Reque
   }
 });
 
-router.get("/user-profile/:userId/saved-pets", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params;
-
+router.get("/user-profile/saved-pets", authenticateJWT, async (req: Request, res: Response): Promise<void> => {
   try {
     const savedPets = await UserSavedPets.findAll({
-      where: { user_id: userId },
+      where: { user_id: req.user!.id },
       attributes: ["pet_id", "createdAt"],
     });
 
@@ -141,7 +138,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isPasswordValid = await user.checkPassword(password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       res.status(401).json({ error: "Invalid credentials" });
@@ -149,13 +146,16 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
     }
 
     const JWT_SECRET: string = process.env.JWT_SECRET_KEY || "your_secret_key";
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.json({
       token,
       user: {
         id: user.id,
         username: user.username,
+        email: user.email,
       },
     });
   } catch (error) {

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/api'; 
-
+const API_BASE_URL = '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -18,9 +17,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export const fetchPets = async (
@@ -34,17 +31,17 @@ export const fetchPets = async (
     return response.data;
   } catch (error: any) {
     console.error('Error fetching pets:', error.message);
-    throw new Error(error.response?.data?.message || 'Failed to fetch pets. Please try again.');
+    throw new Error(error.response?.data?.message || `Failed to fetch pets. (Status: ${error.response?.status})`);
   }
 };
 
 export const savePetToProfile = async (userId: number, petId: number): Promise<void> => {
   try {
-    const response = await api.post(`/users/user-profile/${userId}/save-pet`, { petId });
+    const response = await api.post(`/users/${userId}/save-pet`, { petId });
     return response.data;
   } catch (error: any) {
     console.error('Error saving pet to profile:', error);
-    throw new Error(error.response?.data?.message || 'Failed to save pet.');
+    throw new Error(error.response?.data?.message || `Failed to save pet. (Status: ${error.response?.status})`);
   }
 };
 
@@ -54,37 +51,50 @@ export const fetchUsers = async () => {
     return response.data;
   } catch (error: any) {
     console.error('Error fetching users:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch users.');
+    throw new Error(error.response?.data?.message || `Failed to fetch users. (Status: ${error.response?.status})`);
   }
 };
 
-export const fetchUserProfile = async (userId: number) => {
+export const fetchUser = async (userId: string) => {
   try {
-    const response = await api.get(`/users/user-profile/${userId}`);
+    const response = await api.get(`/users/${userId}`);
     return response.data;
   } catch (error: any) {
-    console.error('Error fetching user profile:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user profile.');
+    console.error('Error fetching user:', error);
+    throw new Error(error.response?.data?.message || `Failed to fetch user. (Status: ${error.response?.status})`);
   }
 };
 
-export const updateUserProfile = async (userId: number, data: { username: string; email: string }) => {
+export const fetchUserProfile = async () => {
   try {
-    const response = await api.put(`/users/user-profile/${userId}`, data);
+    const response = await api.get("/user-profile"); 
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching user profile:", error);
+    throw new Error(error.response?.data?.message || "Failed to fetch user profile.");
+  }
+};
+
+export const updateUserProfile = async (
+  userId: number,
+  data: Partial<{ name: string; email: string; phoneNumber: string; address: string; description: string; photoUrl: string }>
+) => {
+  try {
+    const response = await api.put(`/users/${userId}/profile`, data);
     return response.data;
   } catch (error: any) {
     console.error('Error updating user profile:', error);
-    throw new Error(error.response?.data?.message || 'Failed to update user profile.');
+    throw new Error(error.response?.data?.message || `Failed to update user profile. (Status: ${error.response?.status})`);
   }
 };
 
 export const deleteUserProfile = async (userId: number) => {
   try {
-    const response = await api.delete(`/users/user-profile/${userId}`);
+    const response = await api.delete(`/users/${userId}`);
     return response.data;
   } catch (error: any) {
     console.error('Error deleting user profile:', error);
-    throw new Error(error.response?.data?.message || 'Failed to delete user profile.');
+    throw new Error(error.response?.data?.message || `Failed to delete user profile. (Status: ${error.response?.status})`);
   }
 };
 

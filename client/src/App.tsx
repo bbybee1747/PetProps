@@ -30,7 +30,7 @@ function App() {
         <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="/AdoptionForm" element={<AdoptionForm />} />
         <Route path="*" element={<ErrorPage />} />
-        <Route path="/UserProfile/:userId" element={<UserProfile />} />
+        <Route path="/profile" element={<UserProfile />} />
       </Routes>
       <Footer />
     </Router>

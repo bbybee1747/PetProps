@@ -1,27 +1,24 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: number;
-        email: string;
-        username: string;
-      };
-    }
-  }
+export interface AuthRequest extends Request {
+  user: {
+    id: number;
+    email: string;
+    username: string;
+  };
 }
 
 interface CustomJwtPayload extends JwtPayload {
   id: number;
-  email?: string;
-  username?: string;
+  email: string;
+  username: string;
 }
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 if (!JWT_SECRET) {
-  throw new Error("Missing JWT_SECRET_KEY in environment variables.");
+  console.error("Error: Missing JWT_SECRET_KEY in environment variables.");
+  process.exit(1);
 }
 
 export const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
@@ -37,7 +34,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
   try {
     const payload = jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
 
-    req.user = {
+    (req as AuthRequest).user = {
       id: payload.id,
       email: payload.email || "", 
       username: payload.username || "", 
@@ -47,5 +44,6 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
   } catch (error) {
     console.error("JWT verification failed:", error);
     res.status(403).json({ message: "Invalid or expired token." });
+    return;
   }
 };

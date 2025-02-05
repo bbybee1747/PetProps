@@ -1,4 +1,5 @@
 import { User } from "../models";
+import bcrypt from "bcrypt";
 
 const seedUsers = async () => {
   try {
@@ -12,12 +13,12 @@ const seedUsers = async () => {
       {
         username: "john_doe",
         email: "john@example.com",
-        password: "password123",
+        password: await bcrypt.hash("password123", 10), 
       },
       {
         username: "jane_doe",
         email: "jane@example.com",
-        password: "securepassword",
+        password: await bcrypt.hash("securepassword", 10), 
       },
     ]);
     console.log("Users seeded successfully!");
