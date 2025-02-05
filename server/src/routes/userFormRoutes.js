@@ -14,14 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const db_1 = require("../config/db");
 const auth_1 = require("../middleware/auth");
-const User_1 = __importDefault(require("../models/User"));
+const models_1 = require("../models"); // ✅ Import from models/index.ts
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const router = (0, express_1.Router)();
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User_1.default.findAll();
+        const users = yield models_1.User.findAll({
+            attributes: ["id", "username", "email", "createdAt"],
+        });
         res.json(users);
     }
     catch (err) {
@@ -32,12 +34,14 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/user-profile/:userId", auth_1.authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const result = yield (0, db_1.query)('SELECT id, username, email, created_at FROM "user" WHERE id = $1', [userId]);
-        if (result.rows.length === 0) {
+        const user = yield models_1.User.findByPk(userId, {
+            attributes: ["id", "username", "email", "createdAt"],
+        });
+        if (!user) {
             res.status(404).json({ message: "User not found." });
             return;
         }
-        res.status(200).json(result.rows[0]);
+        res.status(200).json(user);
     }
     catch (error) {
         console.error("Error fetching user profile:", error);
@@ -52,22 +56,15 @@ router.put("/user-profile/:userId", auth_1.authenticateJWT, (req, res) => __awai
         return;
     }
     try {
-        const sql = `
-        UPDATE "user"
-        SET username = $1, email = $2
-        WHERE id = $3
-        RETURNING id, username, email, created_at;
-      `;
-        const values = [username, email, userId];
-        const result = yield (0, db_1.query)(sql, values);
-        if (result.rows.length === 0) {
+        const user = yield models_1.User.findByPk(userId);
+        if (!user) {
             res.status(404).json({ message: "User not found." });
             return;
         }
-        res.status(200).json({
-            message: "User profile updated successfully.",
-            user: result.rows[0],
-        });
+        user.username = username;
+        user.email = email;
+        yield user.save();
+        res.status(200).json({ message: "User profile updated successfully.", user });
     }
     catch (error) {
         console.error("Error updating user profile:", error);
@@ -77,11 +74,12 @@ router.put("/user-profile/:userId", auth_1.authenticateJWT, (req, res) => __awai
 router.delete("/user-profile/:userId", auth_1.authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const result = yield (0, db_1.query)('DELETE FROM "user" WHERE id = $1 RETURNING id', [userId]);
-        if (result.rows.length === 0) {
+        const user = yield models_1.User.findByPk(userId);
+        if (!user) {
             res.status(404).json({ message: "User not found." });
             return;
         }
+        yield user.destroy();
         res.status(200).json({ message: "User profile deleted successfully." });
     }
     catch (error) {
@@ -97,24 +95,15 @@ router.post("/user-profile/:userId/save-pet", auth_1.authenticateJWT, (req, res)
         return;
     }
     try {
-        const checkQuery = `
-        SELECT * FROM user_saved_pets WHERE user_id = $1 AND pet_id = $2;
-      `;
-        const checkResult = yield (0, db_1.query)(checkQuery, [userId, petId]);
-        if (checkResult.rows.length > 0) {
+        const existingSavedPet = yield models_1.UserSavedPets.findOne({
+            where: { user_id: userId, pet_id: petId },
+        });
+        if (existingSavedPet) {
             res.status(400).json({ message: "Pet is already saved." });
             return;
         }
-        const insertQuery = `
-        INSERT INTO user_saved_pets (user_id, pet_id)
-        VALUES ($1, $2)
-        RETURNING id, user_id, pet_id, created_at;
-      `;
-        const insertResult = yield (0, db_1.query)(insertQuery, [userId, petId]);
-        res.status(201).json({
-            message: "Pet saved successfully.",
-            savedPet: insertResult.rows[0],
-        });
+        const savedPet = yield models_1.UserSavedPets.create({ user_id: userId, pet_id: petId });
+        res.status(201).json({ message: "Pet saved successfully.", savedPet });
     }
     catch (error) {
         console.error("Error saving pet:", error);
@@ -124,14 +113,11 @@ router.post("/user-profile/:userId/save-pet", auth_1.authenticateJWT, (req, res)
 router.get("/user-profile/:userId/saved-pets", auth_1.authenticateJWT, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const sql = `
-        SELECT pet_id, created_at
-        FROM user_saved_pets
-        WHERE user_id = $1
-        ORDER BY created_at DESC;
-      `;
-        const result = yield (0, db_1.query)(sql, [userId]);
-        res.status(200).json(result.rows);
+        const savedPets = yield models_1.UserSavedPets.findAll({
+            where: { user_id: userId },
+            attributes: ["pet_id", "createdAt"],
+        });
+        res.status(200).json(savedPets);
     }
     catch (error) {
         console.error("Error fetching saved pets:", error);
@@ -139,22 +125,20 @@ router.get("/user-profile/:userId/saved-pets", auth_1.authenticateJWT, (req, res
     }
 }));
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-        const userResult = yield (0, db_1.query)('SELECT id, username, password_hash FROM "user" WHERE username = $1', [username]);
-        const user = userResult.rows[0];
+        const user = yield models_1.User.findOne({ where: { email } });
         if (!user) {
             res.status(404).json({ error: "User not found" });
             return;
         }
-        const isPasswordValid = yield bcrypt_1.default.compare(password, user.password_hash);
+        const isPasswordValid = yield user.checkPassword(password);
         if (!isPasswordValid) {
             res.status(401).json({ error: "Invalid credentials" });
             return;
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
-            expiresIn: "1h",
-        });
+        const JWT_SECRET = process.env.JWT_SECRET_KEY || "your_secret_key";
+        const token = jsonwebtoken_1.default.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
         res.json({
             token,
             user: {

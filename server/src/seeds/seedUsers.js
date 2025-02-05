@@ -9,22 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seedUsers = void 0;
-const db_1 = require("../config/db");
+const models_1 = require("../models");
 const seedUsers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const sql = `
-    INSERT INTO "user" (username, email, password_hash, created_at)
-    VALUES 
-      ('john_doe', 'john@example.com', '$2b$10$v60BmdZVby0NNGojN9eTKe3dhkHem9iu7r.VCWfkWdbAVxGX9Xs/K', NOW()),
-      ('jane_doe', 'jane@example.com', '$2b$10$d60BmdZVby0NNGojN9eTKe3dhkHem9iu7r.VCWfkWdbAVxGX9Xs/L', NOW())
-    ON CONFLICT DO NOTHING;
-  `;
     try {
-        yield (0, db_1.query)(sql);
+        console.log("User Model:", models_1.User);
+        if (!models_1.User) {
+            throw new Error("User model is not defined! Check your model exports.");
+        }
+        yield models_1.User.bulkCreate([
+            {
+                username: "john_doe",
+                email: "john@example.com",
+                password: "password123",
+            },
+            {
+                username: "jane_doe",
+                email: "jane@example.com",
+                password: "securepassword",
+            },
+        ]);
         console.log("Users seeded successfully!");
     }
-    catch (err) {
-        console.error("Error seeding users:", err);
+    catch (error) {
+        console.error("Error seeding users:", error);
     }
 });
-exports.seedUsers = seedUsers;
+exports.default = seedUsers;

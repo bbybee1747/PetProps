@@ -5,7 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateJWT = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const JWT_SECRET = process.env.JWT_SECRET_KEY || "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
+if (!JWT_SECRET) {
+    throw new Error("Missing JWT_SECRET_KEY in environment variables.");
+}
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

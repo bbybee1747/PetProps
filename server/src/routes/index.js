@@ -11,16 +11,24 @@ const auth_routes_1 = __importDefault(require("./auth-routes"));
 const Contact_1 = __importDefault(require("./Contact"));
 const router = (0, express_1.Router)();
 console.log("Initializing index routes...");
-router.use("/adoption-forms", AdoptionForms_1.default);
-router.use("/users", userFormRoutes_1.default);
-router.use("/pets", pets_1.default);
-router.use("/auth", auth_routes_1.default);
-router.use("/contact", Contact_1.default);
-router.stack.forEach((layer) => {
-    if (layer.route) {
-        const route = layer.route;
-        console.log(`Route: ${Object.keys(route.methods).join(", ").toUpperCase()} ${route.path}`);
+const safeUse = (path, route) => {
+    try {
+        router.use(path, route);
     }
+    catch (error) {
+        console.error(`Failed to load route ${path}:`, error);
+    }
+};
+safeUse("/adoption-forms", AdoptionForms_1.default);
+safeUse("/users", userFormRoutes_1.default);
+safeUse("/pets", pets_1.default);
+safeUse("/auth", auth_routes_1.default);
+safeUse("/contact", Contact_1.default);
+router.stack
+    .filter((layer) => layer.route)
+    .forEach((layer) => {
+    const route = layer.route;
+    console.log(`Route: ${Object.keys(route.methods).join(", ").toUpperCase()} ${route.path}`);
 });
 console.log("Index routes successfully loaded.");
 exports.default = router;

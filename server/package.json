@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev src/server.ts",
-    "start": "bun src/server.ts",
-    "seed": "ts-node src/seeds/index.js"
+    "start": "bun run src/server.ts",
+    "seed": "ts-node src/seeds/index.ts"
   },
   "proxy": "http://localhost:5173",
   "keywords": [],

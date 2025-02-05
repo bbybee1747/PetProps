@@ -9,19 +9,26 @@ const router = Router();
 
 console.log("Initializing index routes...");
 
-router.use("/adoption-forms", adoptionFormsRouter); 
-router.use("/users", userFormRoutes);            
-router.use("/pets", petsRouter);            
-router.use("/auth", authRoutes);   
-router.use("/contact", contactRouter);    
+const safeUse = (path: string, route: any) => {
+  try {
+    router.use(path, route);
+  } catch (error) {
+    console.error(`Failed to load route ${path}:`, error);
+  }
+};
 
-router.stack.forEach((layer) => {
-    if (layer.route) {
-      const route = layer.route as any;
-      console.log(`Route: ${Object.keys(route.methods).join(", ").toUpperCase()} ${route.path}`);
-    }
+safeUse("/adoption-forms", adoptionFormsRouter);
+safeUse("/users", userFormRoutes);
+safeUse("/pets", petsRouter);
+safeUse("/auth", authRoutes);
+safeUse("/contact", contactRouter);
+
+router.stack
+  .filter((layer) => layer.route)
+  .forEach((layer) => {
+    const route = layer.route as any;
+    console.log(`Route: ${Object.keys(route.methods).join(", ").toUpperCase()} ${route.path}`);
   });
-
 
 console.log("Index routes successfully loaded.");
 

@@ -2,7 +2,14 @@ import axios from "axios";
 
 let tokenCache: { token: string; expiry: number } | null = null;
 
-export const fetchAccessToken = async (): Promise<string | undefined> => {
+const PET_FINDER_CLIENT_ID = process.env.PET_FINDER_CLIENT_ID;
+const PET_FINDER_CLIENT_SECRET = process.env.PET_FINDER_CLIENT_SECRET;
+
+if (!PET_FINDER_CLIENT_ID || !PET_FINDER_CLIENT_SECRET) {
+  throw new Error("Missing PetFinder API credentials in environment variables.");
+}
+
+export const fetchAccessToken = async (): Promise<string> => {
   if (tokenCache && Date.now() < tokenCache.expiry) {
     return tokenCache.token;
   }
@@ -10,15 +17,15 @@ export const fetchAccessToken = async (): Promise<string | undefined> => {
   try {
     const response = await axios.post("https://api.petfinder.com/v2/oauth2/token", {
       grant_type: "client_credentials",
-      client_id: process.env.PET_FINDER_CLIENT_ID,
-      client_secret: process.env.PET_FINDER_CLIENT_SECRET,
+      client_id: PET_FINDER_CLIENT_ID,
+      client_secret: PET_FINDER_CLIENT_SECRET,
     });
 
     const { access_token, expires_in } = response.data;
 
     tokenCache = {
       token: access_token,
-      expiry: Date.now() + expires_in * 1000 - 60000, 
+      expiry: Date.now() + expires_in * 1000 - 90000, 
     };
 
     return access_token;

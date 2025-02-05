@@ -10,12 +10,8 @@ const sequelize_1 = __importDefault(require("./sequelize"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 5000;
-app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-}));
+const PORT = process.env.PORT || 5001;
+app.use((0, cors_1.default)());
 app.use(express_1.default.static('../client/dist'));
 app.use(express_1.default.json());
 app.use((req, res, next) => {

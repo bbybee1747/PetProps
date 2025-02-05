@@ -1,29 +1,27 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-import sequelize from "../sequelize"
-
-dotenv.config();
-
-import { seedUsers } from "./user-seeds";
-import { seedAdoptionForms } from "./Adoption-Form-Seeds";
+import sequelize from "../sequelize";
+import seedUsers from "./seedUsers";
+import seedPets from "./seedPets";
 
 
-const runSeeds = async () => {
-  console.log("Seeding database...");
-
-
-
+const seedDatabase = async () => {
   try {
+    console.log("🌱 Starting database seeding...");
+  
+    await sequelize.sync({ force: true }); 
+
+    console.log("Database synced!");
+
     await seedUsers();
-    console.log("Users seeded.");
+    await seedPets();
+  
 
-    await seedAdoptionForms();
-    console.log("Adoption forms seeded.");
-
-    console.log("All seeding completed!");
+    console.log("🎉 Seeding completed successfully!");
   } catch (error) {
-    console.error("Error during seeding:", error); 
+    console.error("Error during database seeding:", error);
+  } finally {
+    await sequelize.close();
+    console.log("Database connection closed.");
   }
 };
 
-runSeeds();
+seedDatabase();

@@ -1,8 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { CustomJwtPayload } from "../models/User"; 
 
-const JWT_SECRET = process.env.JWT_SECRET_KEY || "your_secret_key";
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        email: string;
+        username: string;
+      };
+    }
+  }
+}
+
+interface CustomJwtPayload extends JwtPayload {
+  id: number;
+  email?: string;
+  username?: string;
+}
+
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
+if (!JWT_SECRET) {
+  throw new Error("Missing JWT_SECRET_KEY in environment variables.");
+}
 
 export const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;

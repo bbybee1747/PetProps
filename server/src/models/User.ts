@@ -1,79 +1,76 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../sequelize'; // Use your central Sequelize instance
-import { JwtPayload as DefaultJwtPayload } from 'jsonwebtoken';
+import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import bcrypt from "bcrypt";
 
 interface UserAttributes {
   id: number;
   username: string;
   email: string;
-  password_hash: string;
-  created_at: Date;
+  password: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public username!: string;
   public email!: string;
-  public password_hash!: string;
-  public created_at!: Date;
-}
+  public password!: string;
 
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password_hash: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    sequelize, // Use the central Sequelize instance
-    modelName: 'User',
-    tableName: 'user', // Map to the correct table name
-    timestamps: false, // Disable default `createdAt` and `updatedAt`
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  public async setPassword(password: string) {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(password, saltRounds);
   }
-);
 
-// Update user request body interface
-export interface UpdateUser {
-  username: string;
-  email: string;
+  public async checkPassword(password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
+  }
 }
 
-// Response format for user-related requests
-export interface UserResponse {
-  id: number;
-  username: string;
-  email: string;
-  created_at: Date;
-}
+export function UserFactory(sequelize: Sequelize): typeof User {
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "users",
+      sequelize,
+      hooks: {
+        beforeCreate: async (user: User) => {
+          if (user.password) {
+            await user.setPassword(user.password);
+          }
+        },
+        beforeUpdate: async (user: User) => {
+          if (user.changed("password")) {
+            await user.setPassword(user.password);
+          }
+        },
+      },
+    }
+  );
 
-// JWT Payload interface for authentication
-export interface CustomJwtPayload extends DefaultJwtPayload {
-  id: number;
-  email: string;
-  username: string;
+  return User;
 }
-
-export default User;
