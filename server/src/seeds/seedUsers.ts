@@ -11,9 +11,9 @@ const seedUsers = async () => {
 
     await User.bulkCreate([
       {
-        username: "john_doe",
+        username: "admin",
         email: "john@example.com",
-        password: await bcrypt.hash("password123", 10), 
+        password: await bcrypt.hash("admin123", 10), 
       },
       {
         username: "jane_doe",
