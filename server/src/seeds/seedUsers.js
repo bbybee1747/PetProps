@@ -18,9 +18,9 @@ const seedUsers = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         yield models_1.User.bulkCreate([
             {
-                username: "john_doe",
+                username: "admin",
                 email: "john@example.com",
-                password: "password123",
+                password: "admin123",
             },
             {
                 username: "jane_doe",
